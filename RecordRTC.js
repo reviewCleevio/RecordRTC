@@ -1929,7 +1929,7 @@ function getSeekableBlob(inputBlob, onSuccess, onError) {
 
         onSuccess(newBlob);
       } catch (e) {
-        onError?.()
+        if (onError) onError()
       }
         
     };
