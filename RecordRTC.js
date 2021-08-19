@@ -1903,7 +1903,7 @@ function setSrcObject(stream, element) {
  * getSeekableBlob(blob or file, callback);
  * @see {@link https://github.com/muaz-khan/RecordRTC|RecordRTC Source Code}
  */
-function getSeekableBlob(inputBlob, callback) {
+function getSeekableBlob(inputBlob, onSuccess, onError) {
     // EBML.js copyrights goes to: https://github.com/legokichi/ts-ebml
     if (typeof EBML === 'undefined') {
         throw new Error('Please link: https://www.webrtc-experiment.com/EBML.js');
@@ -1915,6 +1915,7 @@ function getSeekableBlob(inputBlob, callback) {
 
     var fileReader = new FileReader();
     fileReader.onload = function(e) {
+      try {
         var ebmlElms = decoder.decode(this.result);
         ebmlElms.forEach(function(element) {
             reader.read(element);
@@ -1926,7 +1927,11 @@ function getSeekableBlob(inputBlob, callback) {
             type: 'video/webm'
         });
 
-        callback(newBlob);
+        onSuccess(newBlob);
+      } catch (e) {
+        onError?.()
+      }
+        
     };
     fileReader.readAsArrayBuffer(inputBlob);
 }
